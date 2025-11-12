@@ -506,7 +506,7 @@ For local development and testing, follow the [Application Setup](#application-s
 
 To view the application demo:
 
-[Download and watch demo](demo/)
+[Download and watch demo](https://github.com/nivedhapm/clippr/releases/download/v1.0/clippr-application-demo.mp4)
 
 (Place your demo video in a folder named `/demo` within your repository.)
 
