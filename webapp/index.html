@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clippr</title>
+    <link rel="icon" href="assets/images/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <img src="assets/images/logo-banner.png" alt="Clippr Logo">
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1 class="hero-title">Clip your links with Clippr</h1>
+            <p class="hero-description">
+                Shorten URLs and generate custom QR codes with detailed<br>
+                analytics. Build trust with your audience through branded<br>
+                short links.
+            </p>
+        </section>
+
+        <!-- Tab Buttons -->
+        <div class="tab-buttons">
+            <button class="tab-btn active" id="shortLinkTab" data-tab="shortlink">
+                <img src="assets/images/link-O.png" alt="Link Icon">
+                Short Link
+            </button>
+            <button class="tab-btn" id="qrCodeTab" data-tab="qrcode">
+                <img src="assets/images/QR-O.png" alt="QR Code Icon">
+                QR Code
+            </button>
+        </div>
+
+        <!-- Content Card -->
+        <div class="content-card">
+            <!-- Short Link Content -->
+            <div class="tab-content active" id="shortlink">
+                <div class="form-section">
+                    <h2>Shorten a long link</h2>
+                    <p class="no-credit">No credit card required.</p>
+
+                    <label for="longUrl">Paste your long link here</label>
+                    <input
+                        type="text"
+                        id="longUrl"
+                        placeholder="https://example.com/my-long-url"
+                    >
+
+                    <button class="action-btn" onclick="createShortUrl()">Get your short link</button>
+
+                    <!-- Short URL Result -->
+                    <div id="short-url-result" class="result" style="display: none;">
+                        <p>Short URL:</p>
+                        <div class="url-display">
+                            <a href="#" id="short-url-link" target="_blank"></a>
+                            <button onclick="copyToClipboard()" class="btn btn-small">Copy</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-section">
+                    <img src="assets/images/link-card.png" alt="Short Link Preview" class="preview-banner">
+                </div>
+            </div>
+
+            <!-- QR Code Content -->
+            <div class="tab-content" id="qrcode">
+                <div class="form-section">
+                    <h2>Create a QR Code</h2>
+                    <p class="no-credit">No credit card required.</p>
+
+                    <label for="qrUrl">Enter your QR Code destination</label>
+                    <input
+                        type="text"
+                        id="qrUrl"
+                        placeholder="https://example.com/my-long-url"
+                    >
+
+                    <!-- QR Customization Options -->
+                    <div id="qr-customization" class="qr-customization" style="display: none;">
+                        <h3>Customize Your QR Code</h3>
+
+                        <!-- Gradient Toggle -->
+                        <div class="customization-row">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="use-gradient"> Use Gradient Colors
+                            </label>
+                        </div>
+
+                        <!-- Simple Colors (shown by default) -->
+                        <div id="simple-colors" class="customization-row">
+                            <div class="color-picker-group">
+                                <label for="qrForeground">QR Color</label>
+                                <input type="color" id="qrForeground" value="#000000" class="color-input">
+                                <span class="color-value">#000000</span>
+                            </div>
+
+                            <div class="color-picker-group">
+                                <label for="qrBackground">Background</label>
+                                <input type="color" id="qrBackground" value="#FFFFFF" class="color-input">
+                                <span class="color-value">#FFFFFF</span>
+                            </div>
+                        </div>
+
+                        <!-- Gradient Colors (hidden by default) -->
+                        <div id="gradient-colors" class="gradient-picker-group" style="display: none;">
+                            <div class="gradient-type-picker">
+                                <label>Gradient Type:</label>
+                                <select id="gradient-type" class="gradient-select">
+                                    <option value="linear-horizontal">Linear Horizontal</option>
+                                    <option value="linear-vertical">Linear Vertical</option>
+                                    <option value="linear-diagonal">Linear Diagonal</option>
+                                    <option value="radial">Radial Gradient</option>
+                                </select>
+                            </div>
+                            <div class="customization-row">
+                                <div class="color-picker-group">
+                                    <label>Color 1:</label>
+                                    <input type="color" id="gradient-color1" value="#ff0000" class="color-input">
+                                </div>
+                                <div class="color-picker-group" id="color2-picker">
+                                    <label>Color 2:</label>
+                                    <input type="color" id="gradient-color2" value="#0000ff" class="color-input">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="action-btn" onclick="generateQR()">Get your QR code</button>
+                </div>
+
+                <div class="qr-preview-section">
+                    <div id="qr-result" style="display: none;">
+                        <img id="qr-image" alt="QR Code" class="qr-code">
+                        <div class="download-buttons">
+                            <button onclick="downloadQR('png')" class="qr-action-btn" title="Download PNG">
+                                PNG
+                            </button>
+                            <button onclick="downloadQR('svg')" class="qr-action-btn" title="Download SVG">
+                                SVG
+                            </button>
+                        </div>
+                    </div>
+                    <img id="qr-preview-banner" src="assets/images/qr-code-card.png" alt="QR Code Preview" class="preview-banner">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Authentication Overlay -->
+    <div id="authOverlay" class="overlay" style="display:none;">
+        <div class="overlay-content auth-modal">
+            <span class="close-overlay" onclick="closeAuthOverlay()">&times;</span>
+            <h2>Login to Clippr</h2>
+            <p>Choose your authentication method</p>
+
+            <div class="auth-buttons">
+                <button class="auth-btn-google-btn" onclick="loginWithGoogle()">
+                    <img src="assets/images/google-icon.png" alt="Google">
+                    Continue with Google
+                </button>
+
+                <button class="auth-btn-zoho-btn" onclick="loginWithZoho()">
+                    <img src="assets/images/zoho-icon.png" alt="Zoho">
+                    Continue with Zoho
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Overlay -->
+    <div id="profileOverlay" class="overlay" style="display:none;">
+        <div class="overlay-content profile-modal">
+            <span class="close-overlay" onclick="closeProfileOverlay()">&times;</span>
+
+            <div class="profile-header">
+                <img id="profilePicture" src="" alt="Profile" class="profile-pic">
+                <div>
+                    <h2 id="profileName"></h2>
+                    <p id="profileEmail"></p>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="profile-tabs">
+                <button class="profile-tab active" onclick="showProfileTab('urls')">
+                    Shortened URLs
+                </button>
+                <button class="profile-tab" onclick="showProfileTab('qrcodes')">
+                    QR Codes
+                </button>
+            </div>
+
+            <div id="urlsTab" class="profile-tab-content">
+                <div id="urlsList">Loading...</div>
+            </div>
+
+            <div id="qrcodesTab" class="profile-tab-content" style="display:none;">
+                <div id="qrcodesList">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Right: Login/Profile Icon -->
+    <div class="top-right-auth">
+        <button id="loginBtn" class="login-btn" onclick="showAuthOverlay()" style="display:none;">
+            Login
+        </button>
+        <img id="profileIcon" class="profile-icon" onclick="showProfileOverlay()"
+              style="display:none;" src="" alt="Profile">
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p class="copyright">© 2025 All rights reserved</p>
+            <div class="start-now">
+                <img src="assets/images/logo.png" alt="Clippr" class="footer-logo">
+                <span>Start Now:</span>
+                <button class="footer-btn" data-tab="shortlink">
+                    <img src="assets/images/link-G.png" alt="Short Link">
+                </button>
+                <button class="footer-btn" data-tab="qrcode">
+                    <img src="assets/images/QR-G.png" alt="QR Code">
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Update Modal (for editing URLs) -->
+    <div id="update-modal" class="overlay" style="display: none;">
+        <div class="overlay-content">
+            <span class="close-overlay" onclick="closeUpdateModal()">&times;</span>
+            <h3>Update Destination URL</h3>
+            <input type="hidden" id="update-url-id">
+            <input type="text" id="update-url-input" class="form-section input" placeholder="Enter new URL">
+            <div class="modal-buttons">
+                <button onclick="saveUrlUpdate()" class="action-btn">Save</button>
+                <button onclick="closeUpdateModal()" class="btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="js/app.js"></script>
+</body>
+</html>
