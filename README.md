@@ -504,12 +504,11 @@ For local development and testing, follow the [Application Setup](#application-s
 
 ## Demo Video
 
-![Demo GIF](https://raw.githubusercontent.com/nivedhapm/clippr/main/demo/clippr-demo.gif)
+<img src="https://raw.githubusercontent.com/nivedhapm/clippr/main/demo/clippr-demo.gif" alt="Clippr Application Demo" width="700">
+
 To view the application demo:
 
 [Download and watch demo](https://github.com/nivedhapm/clippr/releases/download/v1.0/clippr-application-demo.mp4)
-
-(Place your demo video in a folder named `/demo` within your repository.)
 
 ---
 
