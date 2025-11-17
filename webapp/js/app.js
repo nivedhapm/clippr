@@ -9,6 +9,28 @@ if (window.location.pathname.endsWith('/')) {
 }
 let currentUser = null;
 
+// Toast Notification Function
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+
+    toastMessage.textContent = message;
+
+    // Remove existing type classes
+    toast.classList.remove('success', 'error');
+
+    // Add the appropriate type class
+    toast.classList.add(type);
+
+    // Show the toast
+    toast.classList.add('show');
+
+    // Hide after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
 // Check if user is logged in on page load
 window.onload = function() {
     checkAuth();
@@ -16,22 +38,19 @@ window.onload = function() {
     setupGradientToggle();
     setupFooterButtons();
     updateColorValues();
-    initializeDefaultTab(); // Make sure Short Link tab is active by default
-    setupQrCustomizationToggle(); // Setup QR customization visibility
+    initializeDefaultTab();
+    setupQrCustomizationToggle();
     console.log('API_BASE:', API_BASE);
 };
 
 function initializeDefaultTab() {
-    // Ensure Short Link tab is active by default
     const shortLinkTab = document.querySelector('.tab-btn[data-tab="shortlink"]');
     const shortLinkContent = document.getElementById('shortlink');
 
     if (shortLinkTab && shortLinkContent) {
-        // Remove active from all tabs first
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
 
-        // Make Short Link tab active
         shortLinkTab.classList.add('active');
         shortLinkContent.classList.add('active');
     }
@@ -50,17 +69,14 @@ function setupQrCustomizationToggle() {
             } else {
                 qrCustomization.style.display = 'none';
 
-                // Hide QR result when input is cleared
                 if (qrResult) {
                     qrResult.style.display = 'none';
                 }
 
-                // Show the preview banner again
                 if (qrPreviewBanner) {
                     qrPreviewBanner.style.display = 'block';
                 }
 
-                // Clear stored QR data
                 window.currentQrUrl = null;
                 window.currentQrText = null;
                 window.currentQrCanvas = null;
@@ -93,17 +109,14 @@ async function checkAuth() {
     }
 }
 
-// Tab Switching Functionality
 function setupTabSwitching() {
     const tabButtons = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
 
     function switchTab(tabName) {
-        // Remove active class from all buttons and contents
         tabButtons.forEach(btn => btn.classList.remove('active'));
         tabContents.forEach(content => content.classList.remove('active'));
 
-        // Add active class to clicked button and corresponding content
         const activeTabButton = document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
         if (activeTabButton) {
             activeTabButton.classList.add('active');
@@ -115,7 +128,6 @@ function setupTabSwitching() {
         }
     }
 
-    // Add click event listeners to tab buttons
     tabButtons.forEach(button => {
         button.addEventListener('click', function() {
             const tabName = this.getAttribute('data-tab');
@@ -123,11 +135,9 @@ function setupTabSwitching() {
         });
     });
 
-    // Make switchTab globally available for footer buttons
     window.switchTab = switchTab;
 }
 
-// Footer Buttons Functionality
 function setupFooterButtons() {
     const footerButtons = document.querySelectorAll('.footer-btn');
 
@@ -135,12 +145,10 @@ function setupFooterButtons() {
         button.addEventListener('click', function() {
             const tabName = this.getAttribute('data-tab');
 
-            // Use the global switchTab function
             if (window.switchTab) {
                 window.switchTab(tabName);
             }
 
-            // Scroll to the content card smoothly
             const contentCard = document.querySelector('.content-card');
             if (contentCard) {
                 contentCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -149,7 +157,6 @@ function setupFooterButtons() {
     });
 }
 
-// Auth Overlay Functions
 function showAuthOverlay() {
     document.getElementById('authOverlay').style.display = 'flex';
 }
@@ -166,7 +173,6 @@ function loginWithZoho() {
     window.location.href = API_BASE + 'auth/zoho';
 }
 
-// Profile Overlay Functions
 function showProfileOverlay() {
     if (!currentUser) {
         showAuthOverlay();
@@ -206,7 +212,6 @@ async function loadUserProfile() {
         });
 
         if (response.status === 401) {
-            // Not authenticated – prompt login and do not show placeholders
             showAuthOverlay();
             return;
         }
@@ -257,7 +262,6 @@ function displayUrls(urls) {
     let html = '';
     urls.forEach(url => {
         const shortUrl = API_BASE + 's/' + url.shorturlid;
-        // createdAt from DTO (camelCase) with safe fallbacks
         const createdRaw = url.createdAt || url.created_at || url.createdat || null;
         html += `
             <div class="url-card">
@@ -336,17 +340,17 @@ async function createShortUrl() {
     const longurl = document.getElementById('longUrl').value.trim();
 
     if (!longurl) {
-        alert('Please enter a URL');
+        showToast('Please enter a URL', 'error');
         return;
     }
 
     if (!longurl.startsWith('http://') && !longurl.startsWith('https://')) {
-        alert('URL must start with http:// or https://');
+        showToast('URL must start with http:// or https://', 'error');
         return;
     }
 
     if (!currentUser) {
-        alert('Please login to shorten URLs');
+        showToast('Please login to shorten URLs', 'error');
         showAuthOverlay();
         return;
     }
@@ -369,30 +373,31 @@ async function createShortUrl() {
             document.getElementById('short-url-link').textContent = shortUrl;
             document.getElementById('short-url-result').style.display = 'block';
             document.getElementById('longUrl').value = '';
+            showToast('Short URL created successfully!', 'success');
         } else {
-            alert(data.message || 'Error creating short URL');
+            showToast(data.message || 'Error creating short URL', 'error');
         }
     } catch (error) {
-        alert('Error: ' + error.message);
+        showToast('Error: ' + error.message, 'error');
     }
 }
 
 function copyToClipboard() {
     const shortUrl = document.getElementById('short-url-link').textContent;
     navigator.clipboard.writeText(shortUrl).then(() => {
-        alert('Short URL copied to clipboard!');
+        showToast('URL copied to clipboard!', 'success');
     }).catch(err => {
         console.error('Failed to copy:', err);
-        alert('Failed to copy to clipboard');
+        showToast('Failed to copy to clipboard', 'error');
     });
 }
 
 function copyUrlToClipboard(url) {
     navigator.clipboard.writeText(url).then(() => {
-        alert('URL copied to clipboard!');
+        showToast('URL copied to clipboard!', 'success');
     }).catch(err => {
         console.error('Failed to copy:', err);
-        alert('Failed to copy to clipboard');
+        showToast('Failed to copy to clipboard', 'error');
     });
 }
 
@@ -401,7 +406,7 @@ function generateQR() {
     const text = document.getElementById('qrUrl').value.trim();
 
     if (!text) {
-        alert('Please enter a URL or text');
+        showToast('Please enter a URL or text', 'error');
         return;
     }
 
@@ -419,17 +424,15 @@ function generateQR() {
     document.getElementById('qr-image').src = qrUrl;
     document.getElementById('qr-result').style.display = 'block';
 
-    // Customization options are already shown when URL is entered
-
-    // Hide the preview banner when QR is generated
     const previewBanner = document.getElementById('qr-preview-banner');
     if (previewBanner) {
         previewBanner.style.display = 'none';
     }
 
-    // Store the current QR URL for downloads
     window.currentQrUrl = qrUrl;
     window.currentQrText = text;
+
+    showToast('QR Code generated successfully!', 'success');
 }
 
 function setupGradientToggle() {
@@ -437,9 +440,7 @@ function setupGradientToggle() {
     const simpleColors = document.getElementById('simple-colors');
     const gradientColors = document.getElementById('gradient-colors');
     const gradientTypeSelect = document.getElementById('gradient-type');
-    const color2Picker = document.getElementById('color2-picker');
 
-    // Function to regenerate QR if it exists
     const regenerateQRIfExists = () => {
         if (window.currentQrText) {
             generateQR();
@@ -463,7 +464,6 @@ function setupGradientToggle() {
         regenerateQRIfExists();
     });
 
-    // Add color change listeners for real-time updates
     const gradientColor1 = document.getElementById('gradient-color1');
     const gradientColor2 = document.getElementById('gradient-color2');
     const qrForeground = document.getElementById('qrForeground');
@@ -484,7 +484,6 @@ function setupGradientToggle() {
 }
 
 function handleGradientTypeChange() {
-    // All gradient types now require two colors, so always show color2 picker
     const color2Picker = document.getElementById('color2-picker');
     color2Picker.style.display = 'flex';
 }
@@ -494,10 +493,8 @@ function generateGradientQR(text) {
     const color1 = document.getElementById('gradient-color1').value;
     const color2 = document.getElementById('gradient-color2').value;
 
-    // First, get a basic black QR code from the API
     const basicQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(text)}&color=000000&bgcolor=ffffff`;
 
-    // Create a canvas to apply gradient effect
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = 300;
@@ -508,71 +505,59 @@ function generateGradientQR(text) {
 
     img.onload = function() {
         try {
-            // Draw the QR code
             ctx.drawImage(img, 0, 0, 300, 300);
 
-            // Get image data
             const imageData = ctx.getImageData(0, 0, 300, 300);
             const data = imageData.data;
 
-            // Apply gradient to dark pixels
             for (let i = 0; i < data.length; i += 4) {
                 const r = data[i];
                 const g = data[i + 1];
                 const b = data[i + 2];
 
-                // If pixel is dark (QR code pattern)
                 if (r < 128 && g < 128 && b < 128) {
                     const x = (i / 4) % canvas.width;
                     const y = Math.floor((i / 4) / canvas.width);
 
-                    // Calculate gradient color for this position
                     const color = getGradientColorAt(x, y, canvas.width, canvas.height, color1, color2, gradientType);
-                    data[i] = color.r;     // Red
-                    data[i + 1] = color.g; // Green
-                    data[i + 2] = color.b; // Blue
+                    data[i] = color.r;
+                    data[i + 1] = color.g;
+                    data[i + 2] = color.b;
                 }
             }
 
-            // Put the modified image data back
             ctx.putImageData(imageData, 0, 0);
 
-            // Update the QR image with the gradient version
             document.getElementById('qr-image').src = canvas.toDataURL();
 
-            // Store the canvas for downloads
             window.currentQrCanvas = canvas;
         } catch (error) {
             console.error('Error applying gradient:', error);
-            // Fallback to basic QR code
             document.getElementById('qr-image').src = basicQrUrl;
         }
     };
 
     img.onerror = function() {
         console.error('Error loading QR code image');
-        // Fallback to basic QR code
         const fallbackUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(text)}&color=${color1.replace('#', '')}&bgcolor=ffffff`;
         document.getElementById('qr-image').src = fallbackUrl;
     };
 
     img.src = basicQrUrl;
-    return basicQrUrl; // Return immediately, canvas will update asynchronously
+    return basicQrUrl;
 }
 
 function downloadQR(format) {
     if (!window.currentQrUrl && !window.currentQrCanvas) {
-        alert('Please generate a QR code first');
+        showToast('Please generate a QR code first', 'error');
         return;
     }
 
     const useGradient = document.getElementById('use-gradient').checked;
 
     if (useGradient && window.currentQrCanvas) {
-        // Download the gradient canvas version
         downloadCanvasQR(format);
     } else {
-        // Download regular QR code
         downloadRegularQR(format);
     }
 }
@@ -585,16 +570,17 @@ function downloadCanvasQR(format) {
     if (format === 'png') {
         link.href = canvas.toDataURL('image/png');
     } else if (format === 'svg') {
-        // For SVG, we'll convert to PNG since canvas doesn't directly support SVG export
         link.href = canvas.toDataURL('image/png');
         link.download = `qrcode-gradient-${Date.now()}.png`;
-        alert('Gradient QR codes are downloaded as PNG format');
+        showToast('Gradient QR codes are downloaded as PNG', 'success');
     }
 
     link.style.display = 'none';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
+    showToast('QR Code downloaded successfully!', 'success');
 }
 
 function downloadRegularQR(format) {
@@ -602,13 +588,11 @@ function downloadRegularQR(format) {
     const bgColor = document.getElementById('qrBackground').value.replace('#', '');
     const downloadUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&format=${format}&data=${encodeURIComponent(window.currentQrText)}&color=${fgColor}&bgcolor=${bgColor}`;
 
-    // Create a temporary link and trigger download
     const link = document.createElement('a');
     link.download = `qrcode-${Date.now()}.${format}`;
     link.style.display = 'none';
     document.body.appendChild(link);
 
-    // Fetch the image and create a blob for proper download
     fetch(downloadUrl)
         .then(response => {
             if (!response.ok) {
@@ -621,7 +605,8 @@ function downloadRegularQR(format) {
             link.href = blobUrl;
             link.click();
 
-            // Clean up
+            showToast('QR Code downloaded successfully!', 'success');
+
             setTimeout(() => {
                 window.URL.revokeObjectURL(blobUrl);
                 document.body.removeChild(link);
@@ -629,15 +614,14 @@ function downloadRegularQR(format) {
         })
         .catch(error => {
             console.error('Download failed:', error);
-            // Fallback: direct download (may not work due to CORS)
             link.href = downloadUrl;
             link.target = '_blank';
             link.click();
             document.body.removeChild(link);
+            showToast('Download started', 'success');
         });
 }
 
-// Update color value displays
 function updateColorValues() {
     const colorInputs = document.querySelectorAll('.color-input');
 
@@ -667,12 +651,12 @@ async function saveUrlUpdate() {
     const newUrl = document.getElementById('update-url-input').value.trim();
 
     if (!newUrl) {
-        alert('Please enter a URL');
+        showToast('Please enter a URL', 'error');
         return;
     }
 
     if (!newUrl.startsWith('http://') && !newUrl.startsWith('https://')) {
-        alert('URL must start with http:// or https://');
+        showToast('URL must start with http:// or https://', 'error');
         return;
     }
 
@@ -692,43 +676,55 @@ async function saveUrlUpdate() {
         const data = await response.json();
 
         if (data.status === 'success' || data.status === 'ok') {
-            alert('URL updated successfully');
+            showToast('URL updated successfully!', 'success');
             closeUpdateModal();
             loadUserUrls();
         } else {
-            alert(data.message || 'Error updating URL');
+            showToast(data.message || 'Error updating URL', 'error');
         }
     } catch (error) {
-        alert('Error: ' + error.message);
+        showToast('Error: ' + error.message, 'error');
     }
 }
 
-async function deleteUrl(urlId) {
-    if (!confirm('Are you sure you want to delete this URL?')) {
-        return;
-    }
+function deleteUrl(urlId) {
+    // Store the URL ID and show the delete confirmation modal
+    document.getElementById('delete-url-id').value = urlId;
+    document.getElementById('delete-modal').style.display = 'flex';
+}
+
+async function confirmDeleteUrl() {
+    const urlId = document.getElementById('delete-url-id').value;
+
+    // Close the modal
+    closeDeleteModal();
 
     try {
         const response = await fetch(API_BASE + 'api/delete-url', {
-            method: 'POST',
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
             },
             credentials: 'include',
-            body: JSON.stringify({ urlid: urlId })
+            body: JSON.stringify({ urlid: parseInt(urlId) })
         });
 
         const data = await response.json();
 
         if (data.status === 'success' || data.status === 'ok') {
-            alert('URL deleted successfully');
+            showToast('URL deleted successfully!', 'success');
             loadUserUrls();
         } else {
-            alert(data.message || 'Error deleting URL');
+            showToast(data.message || 'Error deleting URL', 'error');
         }
     } catch (error) {
-        alert('Error: ' + error.message);
+        showToast('Error: ' + error.message, 'error');
     }
+}
+
+function closeDeleteModal() {
+    document.getElementById('delete-modal').style.display = 'none';
+    document.getElementById('delete-url-id').value = '';
 }
 
 function getGradientColorAt(x, y, width, height, color1, color2, gradientType) {
@@ -757,7 +753,6 @@ function getGradientColorAt(x, y, width, height, color1, color2, gradientType) {
 
     ratio = Math.min(1, Math.max(0, ratio));
 
-    // Parse colors
     const c1 = hexToRgb(color1);
     const c2 = hexToRgb(color2);
 
@@ -776,3 +771,39 @@ function hexToRgb(hex) {
         b: parseInt(result[3], 16)
     } : {r: 0, g: 0, b: 0};
 }
+
+// Modal Event Listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Close modals when clicking outside
+    const deleteModal = document.getElementById('delete-modal');
+    const updateModal = document.getElementById('update-modal');
+
+    if (deleteModal) {
+        deleteModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDeleteModal();
+            }
+        });
+    }
+
+    if (updateModal) {
+        updateModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeUpdateModal();
+            }
+        });
+    }
+
+    // Close modals with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if (deleteModal && deleteModal.style.display === 'flex') {
+                closeDeleteModal();
+            }
+            if (updateModal && updateModal.style.display === 'flex') {
+                closeUpdateModal();
+            }
+        }
+    });
+});
+

@@ -242,12 +242,31 @@
             <span class="close-overlay" onclick="closeUpdateModal()">&times;</span>
             <h3>Update Destination URL</h3>
             <input type="hidden" id="update-url-id">
-            <input type="text" id="update-url-input" class="form-section input" placeholder="Enter new URL">
+            <input type="text" id="update-url-input" placeholder="Enter new URL">
             <div class="modal-buttons">
                 <button onclick="saveUrlUpdate()" class="action-btn">Save</button>
                 <button onclick="closeUpdateModal()" class="btn">Cancel</button>
             </div>
         </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="overlay" style="display: none;">
+        <div class="overlay-content">
+            <span class="close-overlay" onclick="closeDeleteModal()">&times;</span>
+            <h3>Confirm Delete</h3>
+            <p style="color: #737373; margin-bottom: 30px; font-size: 16px;">Are you sure you want to delete this URL? This action cannot be undone.</p>
+            <input type="hidden" id="delete-url-id">
+            <div class="modal-buttons">
+                <button onclick="confirmDeleteUrl()" class="action-btn">Delete</button>
+                <button onclick="closeDeleteModal()" class="btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <span id="toast-message"></span>
     </div>
 
 
