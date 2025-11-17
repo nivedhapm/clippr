@@ -20,12 +20,11 @@ public class RedirectServlet extends HttpServlet {
         String pathInfo = request.getPathInfo();
 
         if (pathInfo == null || pathInfo.length() <= 1) {
-            response.sendError(404, "Short URL not found");
+            response.sendRedirect(request.getContextPath() + "/url-not-found.html");
             return;
         }
 
         String shorturlid = pathInfo.substring(1); // Remove leading /
-
 
         try {
             UrlContract.Model model = new UrlModel();
@@ -35,11 +34,11 @@ public class RedirectServlet extends HttpServlet {
                 model.incrementCount(shorturlid);
                 response.sendRedirect(url.getLongurl());
             } else {
-                response.sendError(404, "Short URL not found");
+                response.sendRedirect(request.getContextPath() + "/url-not-found.html?code=" + shorturlid);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendError(500, "Internal server error");
+            response.sendRedirect(request.getContextPath() + "/url-not-found.html?code=" + shorturlid);
         }
     }
 }
