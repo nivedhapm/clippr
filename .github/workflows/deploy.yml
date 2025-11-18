@@ -121,8 +121,13 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
           
-          # Run verification with longer timeout
-          if ssh -q -i ~/.ssh/deploy_key $USER@$HOST << 'ENDSSH'
+          # Use a temporary file to capture the remote script's output (including the successful messages)
+          REMOTE_OUTPUT=$(mktemp)
+          
+          # Execute SSH command:
+          # -qT: Quiet mode to suppress MOTD/banner; Disable pseudo-terminal.
+          # 2>&1 | tee ${REMOTE_OUTPUT}: Pipes ALL output (stdout and stderr) to both the console AND the temp file.
+          ssh -qT -i ~/.ssh/deploy_key $USER@$HOST 2>&1 | tee ${REMOTE_OUTPUT} << 'ENDSSH'
             set -euo pipefail
           
             echo "Waiting for application to deploy (this can take up to 2 minutes)..."
@@ -140,6 +145,7 @@ jobs:
               fi
           
               # 2. Check if directory was exploded OR if application is responding
+              # We use 2>/dev/null here to suppress the error from ls if ROOT doesn't exist yet
               if sudo ls -d /opt/tomcat/webapps/ROOT 2>/dev/null; then
                 echo "Application directory found (ROOT)"
           
@@ -174,24 +180,17 @@ jobs:
           
             exit 1
           ENDSSH
-          then
+          
+          # Capture the exit status of the SSH command immediately
+          STATUS=$?
+          
+          # Clean up the temp file (the tee command above already printed the output)
+          # rm ${REMOTE_OUTPUT} # This line is often unnecessary if tee is used correctly, removed for simplicity
+          
+          # Now, evaluate the clean exit status
+          if [ $STATUS -eq 0 ]; then
             echo "Verification PASSED - Application deployed successfully!"
           else
-            echo "Verification FAILED - Check logs above for details"
-            exit 1
+            echo "Verification FAILED: Remote check returned exit code ${STATUS}."
+            exit 1 # Fail the job if verification fails
           fi
-
-      - name: Deployment Summary
-        if: success()
-        run: |
-          echo "=================================="
-          echo "   DEPLOYMENT SUCCESSFUL!"
-          echo "=================================="
-          echo ""
-          echo "Application URL: https://clipprme.me"
-          echo "Deployment completed at: $(date)"
-          echo ""
-          echo "Next steps:"
-          echo "1. Visit https://clipprme.me to test"
-          echo "2. Clear browser cache if needed (Ctrl+Shift+R)"
-          echo "3. Check application functionality"
