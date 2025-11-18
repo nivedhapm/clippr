@@ -64,23 +64,23 @@ jobs:
             sleep 3
           
             # Backup current deployment
-            if [ -f /opt/tomcat/webapps/clippr.war ]; then
+            if [ -f /opt/tomcat/webapps/ROOT.war ]; then
               echo "Backing up previous deployment..."
-              sudo cp /opt/tomcat/webapps/clippr.war /opt/tomcat/webapps/clippr.war.backup.$(date +%Y%m%d_%H%M%S)
+              sudo cp /opt/tomcat/webapps/ROOT.war /opt/tomcat/webapps/ROOT.war.backup.$(date +%Y%m%d_%H%M%S)
             fi
           
             # Remove old deployment completely
             echo "Cleaning old deployment..."
-            sudo rm -rf /opt/tomcat/webapps/clippr
-            sudo rm -f /opt/tomcat/webapps/clippr.war
+            sudo rm -rf /opt/tomcat/webapps/ROOT
+            sudo rm -f /opt/tomcat/webapps/ROOT.war
           
             # Clean Tomcat work directory (important!)
-            sudo rm -rf /opt/tomcat/work/Catalina/localhost/clippr
+            sudo rm -rf /opt/tomcat/work/Catalina/localhost/ROOT
           
-            # Deploy new WAR
-            echo "Deploying new WAR file..."
-            sudo cp /tmp/clippr.war /opt/tomcat/webapps/clippr.war
-            sudo chown tomcat:tomcat /opt/tomcat/webapps/clippr.war
+            # Deploy new WAR as ROOT.war
+            echo "Deploying new WAR file as ROOT..."
+            sudo cp /tmp/clippr.war /opt/tomcat/webapps/ROOT.war
+            sudo chown tomcat:tomcat /opt/tomcat/webapps/ROOT.war
           
             # Clean up temp
             rm /tmp/clippr.war
@@ -134,25 +134,25 @@ jobs:
               # Check multiple indicators of successful deployment
           
               # 1. Check if WAR file exists
-              if [ ! -f /opt/tomcat/webapps/clippr.war ]; then
-                echo "WAR file missing from webapps!"
+              if [ ! -f /opt/tomcat/webapps/ROOT.war ]; then
+                echo "ROOT.war file missing from webapps!"
                 exit 1
               fi
           
               # 2. Check if directory was exploded OR if application is responding
-              if sudo ls -d /opt/tomcat/webapps/clippr 2>/dev/null; then
-                echo "Application directory found"
+              if sudo ls -d /opt/tomcat/webapps/ROOT 2>/dev/null; then
+                echo "Application directory found (ROOT)"
           
                 # 3. Check if application is actually responding
-                if curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/clippr/ | grep -q "200\|302"; then
-                  echo "Application is responding!"
+                if curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/ | grep -q "200\|302"; then
+                  echo "Application is responding at root context!"
                   echo "Deployment verified successfully!"
                   exit 0
                 else
                   echo "Directory exists but app not responding yet, waiting..."
                 fi
               else
-                echo "Waiting for WAR to explode... ($ELAPSED/${MAX_WAIT}s)"
+                echo "Waiting for ROOT.war to explode... ($ELAPSED/${MAX_WAIT}s)"
               fi
           
               sleep 5
