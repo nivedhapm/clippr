@@ -92,26 +92,36 @@ jobs:
           PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           set -euo pipefail
-    
+            
+          # SSH Key Setup (Necessary for this step)
           mkdir -p ~/.ssh
-          # Add private key safely, ensuring a terminating newline
           printf '%s\n' "$PRIVATE_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
-    
-          ssh -i ~/.ssh/deploy_key $USER@$HOST << 'ENDSSH'
-          set -euo pipefail
-    
-          timeout=60
-          while [ $timeout -gt 0 ]; do
-            if sudo ls /opt/tomcat/webapps/ | grep -q "clippr"; then
-              echo "✅ Application deployed successfully!"
-              exit 0
-            fi
-            echo "Waiting for deployment... ($timeout seconds remaining)"
-            sleep 5
-            timeout=$((timeout - 5))
-          done
-          echo "❌ Deployment verification failed"
-          exit 1
+            
+          # 🔑 Run verification and check its exit code
+          if ssh -i ~/.ssh/deploy_key $USER@$HOST << 'ENDSSH'
+            set -euo pipefail
+           
+            timeout=60
+            while [ $timeout -gt 0 ]; do
+              # Check for the presence of the exploded 'clippr' directory
+              if sudo ls /opt/tomcat/webapps/ | grep -q "clippr"; then
+                echo "✅ Application deployed successfully on server."
+                exit 0  # Success exit on server
+              fi
+              echo "Waiting for deployment... ($timeout seconds remaining)"
+              sleep 5
+              timeout=$((timeout - 5))
+            done
+           
+            # If the loop finishes without finding the directory, exit with 1
+            echo "❌ Deployment verification failed on server."
+            exit 1 # Failure exit on server
           ENDSSH
+          then
+            echo "Verification Step PASSED."
+          else
+            echo "Verification Step FAILED."
+            exit 1 # Fail the job if verification fails
+          fi
