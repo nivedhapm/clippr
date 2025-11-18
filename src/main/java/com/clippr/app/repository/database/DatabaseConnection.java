@@ -16,9 +16,9 @@ public class DatabaseConnection {
     private DatabaseConnection() throws SQLException {
         try {
             Properties props = new Properties();
-            InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties");
+            InputStream input = getClass().getClassLoader().getResourceAsStream("application.properties");
             if (input == null) {
-                throw new SQLException("config.properties file not found in classpath");
+                throw new SQLException("application.properties file not found in classpath");
             }
             props.load(input);
             input.close();

@@ -21,9 +21,9 @@ public class AuthPresenter implements AuthContract.Presenter {
     private void loadConfig() {
         try {
             config = new Properties();
-            InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties");
+            InputStream input = getClass().getClassLoader().getResourceAsStream("application.properties");
             if (input == null) {
-                throw new RuntimeException("config.properties file not found in classpath");
+                throw new RuntimeException("application.properties file not found in classpath");
             }
             config.load(input);
             input.close();

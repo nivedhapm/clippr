@@ -17,8 +17,12 @@ public class GoogleLoginServlet extends HttpServlet {
             throws ServletException, IOException {
 
         Properties config = new Properties();
-        InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties");
+        InputStream input = getClass().getClassLoader().getResourceAsStream("application.properties");
+        if (input == null) {
+            throw new ServletException("application.properties file not found in classpath");
+        }
         config.load(input);
+        input.close();
 
         String clientId = config.getProperty("google.client.id");
         String redirectUri = config.getProperty("google.redirect.uri");

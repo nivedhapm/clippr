@@ -19,9 +19,9 @@ public class ZohoLoginServlet extends HttpServlet {
             throws ServletException, IOException {
 
         Properties config = new Properties();
-        InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties");
+        InputStream input = getClass().getClassLoader().getResourceAsStream("application.properties");
         if (input == null) {
-            throw new ServletException("config.properties file not found in classpath");
+            throw new ServletException("application.properties file not found in classpath");
         }
         config.load(input);
         input.close();
