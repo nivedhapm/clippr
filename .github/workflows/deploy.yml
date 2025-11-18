@@ -31,38 +31,79 @@ jobs:
         run: |
           set -euo pipefail
 
+          # Create SSH directory
           mkdir -p ~/.ssh
+
+          # Add private key safely
           printf '%s\n' "$PRIVATE_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
+          
+          # Add host to known_hosts
           ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
 
+          # Ensure WAR exists
           if [ ! -f target/clippr.war ]; then
-            echo "❌ WAR not found: target/clippr.war"
+            echo "WAR not found: target/clippr.war"
             exit 1
           fi
-
+          
+          echo "WAR file found, size: $(du -h target/clippr.war | cut -f1)"
+          
+          # Copy WAR file to server
+          echo "Uploading WAR file to server..."
           scp -i ~/.ssh/deploy_key target/clippr.war $USER@$HOST:/tmp/clippr.war
-
+          echo "Upload complete"
+          
+          # Deploy on server
+          echo "Deploying application..."
           ssh -i ~/.ssh/deploy_key $USER@$HOST << 'ENDSSH'
             set -euo pipefail
 
+            echo "Stopping Tomcat..."
             sudo systemctl stop tomcat || true
-
-            if [ -f /opt/tomcat/webapps/ROOT.war ]; then
-              sudo cp /opt/tomcat/webapps/ROOT.war /opt/tomcat/webapps/ROOT.war.backup
+            sleep 3
+          
+            # Backup current deployment
+            if [ -f /opt/tomcat/webapps/clippr.war ]; then
+              echo "Backing up previous deployment..."
+              sudo cp /opt/tomcat/webapps/clippr.war /opt/tomcat/webapps/clippr.war.backup.$(date +%Y%m%d_%H%M%S)
             fi
-            sudo rm -rf /opt/tomcat/webapps/ROOT
-            sudo rm -f /opt/tomcat/webapps/ROOT.war
-
-            sudo cp /tmp/clippr.war /opt/tomcat/webapps/ROOT.war
-            sudo chown tomcat:tomcat /opt/tomcat/webapps/ROOT.war
+          
+            # Remove old deployment completely
+            echo "Cleaning old deployment..."
+            sudo rm -rf /opt/tomcat/webapps/clippr
+            sudo rm -f /opt/tomcat/webapps/clippr.war
+          
+            # Clean Tomcat work directory (important!)
+            sudo rm -rf /opt/tomcat/work/Catalina/localhost/clippr
+          
+            # Deploy new WAR
+            echo "Deploying new WAR file..."
+            sudo cp /tmp/clippr.war /opt/tomcat/webapps/clippr.war
+            sudo chown tomcat:tomcat /opt/tomcat/webapps/clippr.war
+          
+            # Clean up temp
             rm /tmp/clippr.war
-
+          
+            # Start Tomcat
+            echo "Starting Tomcat..."
             sudo systemctl start tomcat
-            echo "Waiting for application to deploy..."
-            sleep 30
-            sudo systemctl status tomcat --no-pager
+          
+            # Wait for Tomcat to start
+            echo "Waiting for Tomcat to start..."
+            sleep 10
+          
+            # Check Tomcat status
+            if sudo systemctl is-active --quiet tomcat; then
+              echo "Tomcat is running"
+            else
+              echo "Tomcat failed to start"
+              sudo systemctl status tomcat --no-pager
+              exit 1
+            fi
           ENDSSH
+          
+          echo "Deployment commands completed"
 
       - name: Verify Deployment
         env:
@@ -72,35 +113,85 @@ jobs:
         run: |
           set -euo pipefail
           
-          # SSH Key Setup (CRITICAL FIX: Note the \n for newline)
+          echo "Verifying deployment..."
+          
+          # SSH Key Setup
           mkdir -p ~/.ssh
           printf '%s\n' "$PRIVATE_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
           
-          # Run verification and check its exit code
+          # Run verification with longer timeout
           if ssh -i ~/.ssh/deploy_key $USER@$HOST << 'ENDSSH'
             set -euo pipefail
           
-            timeout=60
-            while [ $timeout -gt 0 ]; do
-              # Check for the presence of the exploded 'ROOT' directory
-              if sudo ls /opt/tomcat/webapps/ | grep -q "^ROOT$"; then
-                echo "Application deployed successfully on server (ROOT found)."
-                exit 0  # Success exit on server
+            echo "Waiting for application to deploy (this can take up to 2 minutes)..."
+          
+            MAX_WAIT=120  # 2 minutes total
+            ELAPSED=0
+          
+            while [ $ELAPSED -lt $MAX_WAIT ]; do
+              # Check multiple indicators of successful deployment
+          
+              # 1. Check if WAR file exists
+              if [ ! -f /opt/tomcat/webapps/clippr.war ]; then
+                echo "WAR file missing from webapps!"
+                exit 1
               fi
-              echo "Waiting for deployment... ($timeout seconds remaining)"
+          
+              # 2. Check if directory was exploded OR if application is responding
+              if sudo ls -d /opt/tomcat/webapps/clippr 2>/dev/null; then
+                echo "Application directory found"
+          
+                # 3. Check if application is actually responding
+                if curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/clippr/ | grep -q "200\|302"; then
+                  echo "Application is responding!"
+                  echo "Deployment verified successfully!"
+                  exit 0
+                else
+                  echo "Directory exists but app not responding yet, waiting..."
+                fi
+              else
+                echo "Waiting for WAR to explode... ($ELAPSED/${MAX_WAIT}s)"
+              fi
+          
               sleep 5
-              timeout=$((timeout - 5))
+              ELAPSED=$((ELAPSED + 5))
             done
           
-            # If the loop finishes without finding the directory, exit with 1
-            echo "Deployment verification failed (ROOT not found)."
-            exit 1 # Failure exit on server
+            # Timeout reached
+            echo "Deployment verification timed out after ${MAX_WAIT} seconds"
+            echo ""
+            echo "Diagnostic information:"
+            echo "--- Tomcat Status ---"
+            sudo systemctl status tomcat --no-pager || true
+            echo ""
+            echo "--- Webapps Directory ---"
+            sudo ls -lah /opt/tomcat/webapps/ || true
+            echo ""
+            echo "--- Recent Tomcat Logs ---"
+            sudo tail -50 /opt/tomcat/logs/catalina.out || true
+          
+            exit 1
           ENDSSH
           then
-            echo "Verification Step PASSED."
+            echo "Verification PASSED - Application deployed successfully!"
           else
-            echo "Verification Step FAILED."
-            exit 1 # Fail the job if verification fails
+            echo "Verification FAILED - Check logs above for details"
+            exit 1
           fi
+
+      - name: Deployment Summary
+        if: success()
+        run: |
+          echo "=================================="
+          echo "   DEPLOYMENT SUCCESSFUL!"
+          echo "=================================="
+          echo ""
+          echo "Application URL: https://clipprme.me"
+          echo "Deployment completed at: $(date)"
+          echo ""
+          echo "Next steps:"
+          echo "1. Visit https://clipprme.me to test"
+          echo "2. Clear browser cache if needed (Ctrl+Shift+R)"
+          echo "3. Check application functionality"
