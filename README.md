@@ -4,13 +4,17 @@
 # Clippr - URL Shortener & QR Code Generator
 
 [![Java](https://img.shields.io/badge/Java-17+-orange.svg)](https://www.oracle.com/java/)
-[![Maven](https://img.shields.io/badge/Maven-3.6+-blue.svg)](https://maven.apache.org/)
+[![Maven](https://img.shields.io/badge/Maven-3.6+-purple.svg)](https://maven.apache.org/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0+-blue.svg)](https://www.mysql.com/)
 [![Tomcat](https://img.shields.io/badge/Tomcat-10.1-yellow.svg)](https://tomcat.apache.org/)
 [![Oracle Cloud](https://img.shields.io/badge/Oracle_Cloud-Free_Tier-red.svg)](https://www.oracle.com/cloud/free/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 **A full-stack web application for URL shortening and QR code generation with OAuth authentication**
+
+🌐 **[Live Demo: https://clipprme.me](https://clipprme.me)** 🌐
+
+*Experience Clippr in action! Create short URLs, generate custom QR codes, and manage your links with our live production deployment.*
 
 </div>
 
@@ -22,6 +26,7 @@
 3. [Technology Stack](#technology-stack)
 4. [Application Setup](#application-setup)
 5. [Usage Guide](#usage-guide)
+6. [API Endpoints](#api-endpoints)
 6. [Deployment](#deployment)
 7. [Demo Video](#demo-video)
 8. [Contributing](#contributing)
@@ -41,6 +46,17 @@ Clippr demonstrates a complete end-to-end system integrating:
 - Vanilla JavaScript frontend with Canvas API
 
 The combination of traditional server-side rendering with modern JavaScript capabilities creates a responsive and feature-rich user experience, while the robust backend ensures data integrity and security.
+
+### Educational Value
+This project serves as an excellent learning resource for developers interested in:
+- Full-stack Java web development with modern practices
+- OAuth 2.0 authentication implementation
+- RESTful API design and implementation
+- Database integration with MySQL
+- Frontend JavaScript and Canvas API usage
+- Cloud deployment on Oracle Cloud Infrastructure
+
+Students and developers are encouraged to explore, learn from, and contribute to this codebase!
 
 ---
 
@@ -278,28 +294,45 @@ Output: http://localhost:8080/clippr/s/aB3xYz
 - **Radial Gradients**: Center-to-edge color transitions
 - **Single Color Mode**: Apply single color to QR pattern
 
-### For Developers
+[//]: # (### For Developers)
 
-#### API Integration
+[//]: # ()
+[//]: # (#### API Integration)
 
-Clippr provides RESTful APIs for integration:
+[//]: # ()
+[//]: # (Clippr provides RESTful APIs for integration:)
 
-```javascript
-// Create short URL
-const response = await fetch('http://localhost:8080/clippr/api/create-short-url', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
-    body: JSON.stringify({ 
-        longurl: 'https://example.com' 
-    })
-});
+[//]: # ()
+[//]: # (```javascript)
 
-const data = await response.json();
-console.log(data.shorturl); // http://localhost:8080/clippr/s/abc123
-```
+[//]: # (// Create short URL)
 
-### API Endpoints
+[//]: # (const response = await fetch&#40;'http://localhost:8080/clippr/api/create-short-url', {)
+
+[//]: # (    method: 'POST',)
+
+[//]: # (    headers: { 'Content-Type': 'application/json' },)
+
+[//]: # (    credentials: 'include',)
+
+[//]: # (    body: JSON.stringify&#40;{ )
+
+[//]: # (        longurl: 'https://example.com' )
+
+[//]: # (    }&#41;)
+
+[//]: # (}&#41;;)
+
+[//]: # ()
+[//]: # (const data = await response.json&#40;&#41;;)
+
+[//]: # (console.log&#40;data.shorturl&#41;; // http://localhost:8080/clippr/s/abc123)
+
+[//]: # (```)
+
+---
+
+## API Endpoints
 
 #### Authentication Endpoints
 | Method | Endpoint | Description | Authentication |
@@ -535,8 +568,8 @@ Contributions are welcome. To contribute:
 5. Submit a Pull Request.
 
 Report bugs or request features here:
-- [Report Bug](https://github.com/yourusername/clippr-app/issues)
-- [Request Feature](https://github.com/yourusername/clippr-app/issues)
+- [Report Bug](https://github.com/nivedhapm/clippr/issues)
+- [Request Feature](https://github.com/nivedhapm/clippr/issues)
 
 ---
 
