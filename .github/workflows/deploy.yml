@@ -122,7 +122,7 @@ jobs:
           ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
           
           # Run verification with longer timeout
-          if ssh -i ~/.ssh/deploy_key $USER@$HOST << 'ENDSSH'
+          if ssh -q -i ~/.ssh/deploy_key $USER@$HOST << 'ENDSSH'
             set -euo pipefail
           
             echo "Waiting for application to deploy (this can take up to 2 minutes)..."
