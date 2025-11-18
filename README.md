@@ -12,7 +12,7 @@
 
 **A full-stack web application for URL shortening and QR code generation with OAuth authentication**
 
-🌐 **[Live Demo: https://clipprme.me](https://clipprme.me)** 🌐
+ **[Live: https://clipprme.me](https://clipprme.me)** 
 
 *Experience Clippr in action! Create short URLs, generate custom QR codes, and manage your links with our live production deployment.*
 

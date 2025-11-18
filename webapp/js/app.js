@@ -241,12 +241,11 @@ async function loadUserProfile() {
             profilePicture.style.backgroundImage = 'none';
             profilePicture.style.backgroundColor = '#C5FF41';
             profilePicture.style.color = '#151312';
-            profilePicture.style.fontSize = '24px';
+            profilePicture.style.fontSize = '20px';
             profilePicture.style.fontWeight = '700';
             profilePicture.style.display = 'flex';
             profilePicture.style.alignItems = 'center';
             profilePicture.style.justifyContent = 'center';
-            profilePicture.style.border = '3px solid #1B86FF';
             profilePicture.textContent = initials;
 
             // Update profile icon in header to show initials
@@ -254,7 +253,7 @@ async function loadUserProfile() {
             profileIcon.style.backgroundImage = 'none';
             profileIcon.style.backgroundColor = '#C5FF41';
             profileIcon.style.color = '#151312';
-            profileIcon.style.fontSize = '18px';
+            profileIcon.style.fontSize = '15px';
             profileIcon.style.fontWeight = '600';
             profileIcon.style.display = 'flex';
             profileIcon.style.alignItems = 'center';
