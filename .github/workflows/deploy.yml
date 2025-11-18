@@ -20,6 +20,39 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Create application.properties with secrets
+        env:
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          ZOHO_CLIENT_ID: ${{ secrets.ZOHO_CLIENT_ID }}
+          ZOHO_CLIENT_SECRET: ${{ secrets.ZOHO_CLIENT_SECRET }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: |
+          # Create application.properties with actual values
+          cat > src/main/resources/application.properties << EOF
+          # Google OAuth Configuration
+          google.client.id=${GOOGLE_CLIENT_ID}
+          google.client.secret=${GOOGLE_CLIENT_SECRET}
+          google.redirect.uri=https://clipprme.me/auth/google/callback
+
+          # Zoho OAuth Configuration
+          zoho.client.id=${ZOHO_CLIENT_ID}
+          zoho.client.secret=${ZOHO_CLIENT_SECRET}
+          zoho.redirect.uri=https://clipprme.me/auth/zoho/callback
+
+          # Database Configuration
+          db.host=localhost
+          db.port=3306
+          db.name=${DB_NAME}
+          db.user=${DB_USER}
+          db.password=${DB_PASSWORD}
+
+          # Application Configuration
+          app.host=https://clipprme.me
+          EOF
+
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
