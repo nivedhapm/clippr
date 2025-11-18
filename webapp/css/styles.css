@@ -503,7 +503,7 @@ footer {
     align-items: center;
     justify-content: center;
     font-family: 'M PLUS 1p', sans-serif;
-    border: 3px solid #1B86FF;
+    border: 3px solid #C5FF41;
     user-select: none;
 }
 
@@ -1137,7 +1137,7 @@ footer {
     }
 
     .action-btn {
-        width: 100%;
+        width: 50%;
         padding: 14px 24px;
         font-size: 14px;
     }
@@ -1184,7 +1184,7 @@ footer {
     }
 
     .download-buttons {
-        flex-direction: column;
+        flex-direction: row;
         gap: 10px;
         align-items: center;
     }
@@ -1347,7 +1347,7 @@ footer {
     /* Update/Delete modal mobile */
     #update-modal .overlay-content,
     #delete-modal .overlay-content {
-        max-width: 90%;
+        max-width: 85%;
         padding: 25px 20px;
     }
 
@@ -1363,12 +1363,12 @@ footer {
     }
 
     .modal-buttons {
-        flex-direction: column;
+        flex-direction: row;
         gap: 10px;
     }
 
     .modal-buttons button {
-        width: 100%;
+        width: 50%;
         padding: 12px 20px;
         font-size: 14px;
     }
@@ -1523,8 +1523,8 @@ footer {
     }
 
     .overlay-content {
-        width: 98%;
-        max-width: 320px;
+        width: 90%;
+        max-width: 400px;
         padding: 20px 15px;
         margin: 10px;
     }
@@ -1607,7 +1607,7 @@ footer {
     }
 
     .overlay-content {
-        max-width: 700px;
+        max-width: 500px;
     }
 
     .profile-modal {
