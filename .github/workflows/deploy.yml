@@ -33,9 +33,9 @@ jobs:
 
           # Create SSH directory
           mkdir -p ~/.ssh
-          
-          # Add private key safely
-          printf '%s' "$PRIVATE_KEY" > ~/.ssh/deploy_key
+
+          # Add private key safely, ensuring a terminating newline
+          printf '%s\n' "$PRIVATE_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           
           # Add host to known_hosts
@@ -94,7 +94,8 @@ jobs:
           set -euo pipefail
     
           mkdir -p ~/.ssh
-          printf '%s' "$PRIVATE_KEY" > ~/.ssh/deploy_key
+          # Add private key safely, ensuring a terminating newline
+          printf '%s\n' "$PRIVATE_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
     
