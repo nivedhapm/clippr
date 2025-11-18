@@ -95,7 +95,17 @@ async function checkAuth() {
             currentUser = true;
             document.getElementById('loginBtn').style.display = 'none';
             document.getElementById('profileIcon').style.display = 'block';
-            document.getElementById('profileIcon').src = 'https://ui-avatars.com/api/?name=User&background=C5FF41&color=151312';
+            // Create initials display instead of image
+            const profileIcon = document.getElementById('profileIcon');
+            profileIcon.style.backgroundImage = 'none';
+            profileIcon.style.backgroundColor = '#C5FF41';
+            profileIcon.style.color = '#151312';
+            profileIcon.style.fontSize = '18px';
+            profileIcon.style.fontWeight = '600';
+            profileIcon.style.display = 'flex';
+            profileIcon.style.alignItems = 'center';
+            profileIcon.style.justifyContent = 'center';
+            profileIcon.textContent = 'US'; // Default initials, will be updated when profile loads
         } else {
             currentUser = false;
             document.getElementById('loginBtn').style.display = 'block';
@@ -223,9 +233,33 @@ async function loadUserProfile() {
             document.getElementById('profileName').textContent = name;
             document.getElementById('profileEmail').textContent = email;
 
-            const avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=C5FF41&color=151312`;
-            document.getElementById('profilePicture').src = userData.profilePicture || avatar;
-            document.getElementById('profileIcon').src = userData.profilePicture || avatar;
+            // Generate initials from name
+            const initials = name.split(' ').map(n => n.charAt(0)).join('').substring(0, 2).toUpperCase();
+
+            // Update profile picture in modal to show initials
+            const profilePicture = document.getElementById('profilePicture');
+            profilePicture.style.backgroundImage = 'none';
+            profilePicture.style.backgroundColor = '#C5FF41';
+            profilePicture.style.color = '#151312';
+            profilePicture.style.fontSize = '24px';
+            profilePicture.style.fontWeight = '700';
+            profilePicture.style.display = 'flex';
+            profilePicture.style.alignItems = 'center';
+            profilePicture.style.justifyContent = 'center';
+            profilePicture.style.border = '3px solid #1B86FF';
+            profilePicture.textContent = initials;
+
+            // Update profile icon in header to show initials
+            const profileIcon = document.getElementById('profileIcon');
+            profileIcon.style.backgroundImage = 'none';
+            profileIcon.style.backgroundColor = '#C5FF41';
+            profileIcon.style.color = '#151312';
+            profileIcon.style.fontSize = '18px';
+            profileIcon.style.fontWeight = '600';
+            profileIcon.style.display = 'flex';
+            profileIcon.style.alignItems = 'center';
+            profileIcon.style.justifyContent = 'center';
+            profileIcon.textContent = initials;
         } else {
             console.error('Failed to load profile:', response.status);
         }

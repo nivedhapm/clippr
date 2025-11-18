@@ -495,6 +495,16 @@ footer {
     width: 60px;
     height: 60px;
     border-radius: 50%;
+    background-color: #C5FF41;
+    color: #151312;
+    font-size: 24px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'M PLUS 1p', sans-serif;
+    border: 3px solid #1B86FF;
+    user-select: none;
 }
 
 .profile-header h2 {
@@ -653,6 +663,15 @@ footer {
     cursor: pointer;
     border: 3px solid #C5FF41;
     transition: all 0.3s ease;
+    background-color: #C5FF41;
+    color: #151312;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'M PLUS 1p', sans-serif;
+    user-select: none;
 }
 
 .profile-icon:hover {
@@ -1010,48 +1029,588 @@ footer {
 }
 
 /* Responsive Design */
+
+/* Mobile Styles (up to 768px) */
 @media (max-width: 768px) {
-    .customization-row {
-        flex-direction: column;
+    /* Hide start-now section on mobile */
+    .start-now {
+        display: none;
+    }
+
+    /* Header adjustments */
+    header {
+        padding: 15px 20px;
+    }
+
+    .logo img {
+        height: 50px;
+    }
+
+    /* Top right auth adjustments */
+    .top-right-auth {
+        top: 15px;
+        right: 20px;
+    }
+
+    .login-btn {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+
+    .profile-icon {
+        width: 35px;
+        height: 35px;
+        border-width: 2px;
+    }
+
+    /* Main content adjustments */
+    main {
+        padding: 20px 15px;
+    }
+
+    /* Hero section mobile adjustments */
+    .hero {
+        margin-bottom: 30px;
     }
 
     .hero-title {
         font-size: 36px;
+        line-height: 1.2;
+        margin-bottom: 20px;
     }
 
     .hero-description {
         font-size: 16px;
+        line-height: 1.5;
+        padding: 0 10px;
     }
 
+    /* Tab buttons mobile */
+    .tab-buttons {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .tab-btn {
+        width: 100%;
+        max-width: 280px;
+        padding: 12px 20px;
+        font-size: 14px;
+        justify-content: center;
+    }
+
+    .tab-btn img {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* Content card mobile */
     .content-card {
-        padding: 30px;
+        padding: 20px;
+        margin: 0 10px;
+        border-radius: 12px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
     }
 
     .tab-content.active {
         flex-direction: column;
-        gap: 30px;
+        gap: 20px;
+    }
+
+    /* Form section mobile */
+    .form-section h2 {
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+
+    .form-section label {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .form-section input {
+        padding: 12px 14px;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .action-btn {
+        width: 100%;
+        padding: 14px 24px;
+        font-size: 14px;
+    }
+
+    /* Preview section mobile */
+    .preview-section {
+        align-items: center;
+    }
+
+    .preview-banner {
+        width: 200px;
+        height: 200px;
+    }
+
+    /* QR customization mobile */
+    .customization-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .qr-customization {
+        padding: 20px;
+        margin: 20px 0;
+    }
+
+    .qr-customization h3 {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+
+    .color-input {
+        height: 35px;
+    }
+
+    .gradient-picker-group {
+        padding: 15px;
+        gap: 0.75rem;
+    }
+
+    /* QR code display mobile */
+    .qr-code {
+        width: 180px;
+        height: 180px;
+    }
+
+    .download-buttons {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .qr-action-btn {
+        width: 100%;
+        max-width: 200px;
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+
+    /* Footer mobile */
+    footer {
+        padding: 20px;
     }
 
     .footer-content {
         flex-direction: column;
-        gap: 20px;
+        gap: 15px;
         text-align: center;
     }
 
-    header {
-        padding: 20px 30px;
+    .copyright {
+        font-size: 12px;
     }
 
-    footer {
-        padding: 20px 30px;
+    /* Overlay and modal mobile improvements */
+    .overlay-content {
+        width: 95%;
+        max-width: 350px;
+        padding: 25px 20px;
+        margin: 20px;
+        max-height: 85vh;
+        border-radius: 12px;
     }
 
-    .gradient-picker-group {
-        gap: 0.75rem;
+    .close-overlay {
+        top: 15px;
+        right: 15px;
+        font-size: 24px;
     }
 
-    .tab-buttons {
+    /* Auth modal mobile */
+    .auth-modal h2 {
+        font-size: 20px;
+        margin-bottom: 8px;
+    }
+
+    .auth-modal p {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .auth-btn-google-btn, .auth-btn-zoho-btn {
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+
+    .auth-btn-google-btn img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .auth-btn-zoho-btn img {
+        width: 35px;
+        height: 20px;
+    }
+
+    /* Profile modal mobile */
+    .profile-modal {
+        max-width: 95%;
+    }
+
+    .profile-header {
         flex-direction: column;
         align-items: center;
+        text-align: center;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+    }
+
+    .profile-pic {
+        width: 50px;
+        height: 50px;
+    }
+
+    .profile-header h2 {
+        font-size: 18px;
+    }
+
+    .profile-header p {
+        font-size: 14px;
+    }
+
+    .logout-btn {
+        margin: 0;
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+
+    /* Profile tabs mobile */
+    .profile-tabs {
+        gap: 5px;
+        margin-bottom: 15px;
+    }
+
+    .profile-tab {
+        padding: 10px 8px;
+        font-size: 14px;
+    }
+
+    /* URL/QR cards mobile */
+    .url-card, .qr-card {
+        padding: 15px;
+        margin-bottom: 12px;
+        border-radius: 6px;
+    }
+
+    .url-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .url-info h3 {
+        font-size: 14px;
+        word-break: break-all;
+    }
+
+    .url-info p {
+        font-size: 12px;
+    }
+
+    .url-actions {
+        align-self: flex-end;
+        gap: 8px;
+    }
+
+    .action-icon-btn {
+        width: 32px;
+        height: 32px;
+    }
+
+    .stats-row {
+        gap: 15px;
+        margin-top: 12px;
+        padding-top: 12px;
+    }
+
+    .stat-label {
+        font-size: 11px;
+    }
+
+    .stat-value {
+        font-size: 16px;
+    }
+
+    /* Update/Delete modal mobile */
+    #update-modal .overlay-content,
+    #delete-modal .overlay-content {
+        max-width: 90%;
+        padding: 25px 20px;
+    }
+
+    #update-modal .overlay-content h3 {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+
+    #update-url-input {
+        padding: 12px 14px;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .modal-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .modal-buttons button {
+        width: 100%;
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+
+    #delete-modal .overlay-content h3 {
+        font-size: 18px;
+        text-align: center;
+    }
+
+    /* Toast mobile */
+    .toast {
+        min-width: 280px;
+        font-size: 14px;
+        padding: 12px 20px;
+        border-radius: 6px;
+        left: 50%;
+        right: auto;
+        margin: 0 10px;
+        width: calc(100% - 40px);
+        max-width: 320px;
+    }
+
+    /* Results display mobile */
+    .result {
+        margin-top: 1rem;
+        padding: 15px;
+    }
+
+    .url-display {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .url-display a {
+        padding: 12px;
+        font-size: 14px;
+        word-break: break-all;
+    }
+
+    .btn-small {
+        padding: 10px 20px;
+        font-size: 14px;
+        align-self: center;
+        width: fit-content;
+    }
+}
+
+/* Tablet Styles (769px to 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    /* Header adjustments */
+    header {
+        padding: 25px 40px;
+    }
+
+    .logo img {
+        height: 60px;
+    }
+
+    /* Top right auth adjustments */
+    .top-right-auth {
+        top: 25px;
+        right: 40px;
+    }
+
+    /* Main content adjustments */
+    main {
+        padding: 30px 25px;
+    }
+
+    .hero-title {
+        font-size: 42px;
+    }
+
+    .hero-description {
+        font-size: 17px;
+    }
+
+    /* Content card tablet */
+    .content-card {
+        padding: 40px;
+        max-width: 800px;
+    }
+
+    .tab-content.active {
+        gap: 35px;
+    }
+
+    /* Preview adjustments */
+    .preview-banner {
+        width: 250px;
+        height: 250px;
+    }
+
+    .qr-code {
+        width: 220px;
+        height: 220px;
+    }
+
+    /* Footer tablet */
+    footer {
+        padding: 25px 40px;
+    }
+
+    /* Overlay tablet */
+    .overlay-content {
+        max-width: 600px;
+        padding: 35px;
+    }
+
+    /* Profile modal tablet */
+    .profile-modal {
+        max-width: 650px;
+    }
+}
+
+/* Extra Small Mobile Styles (up to 480px) */
+@media (max-width: 480px) {
+    /* Further mobile optimizations */
+    .hero-title {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    .hero-description {
+        font-size: 13px;
+        padding: 0 5px;
+    }
+
+    .content-card {
+        margin: 0 5px;
+        padding: 15px;
+    }
+
+    .form-section h2 {
+        font-size: 20px;
+    }
+
+    .form-section input {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    .action-btn {
+        padding: 12px 20px;
+        font-size: 13px;
+    }
+
+    .tab-btn {
+        padding: 10px 16px;
+        font-size: 13px;
+        max-width: 250px;
+    }
+
+    .overlay-content {
+        width: 98%;
+        max-width: 320px;
+        padding: 20px 15px;
+        margin: 10px;
+    }
+
+    .auth-modal h2 {
+        font-size: 18px;
+    }
+
+    .auth-btn-google-btn, .auth-btn-zoho-btn {
+        padding: 10px 14px;
+        font-size: 13px;
+        gap: 10px;
+    }
+
+    .profile-header {
+        gap: 10px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+    }
+
+    .profile-pic {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+
+    .profile-header h2 {
+        font-size: 16px;
+    }
+
+    .profile-header p {
+        font-size: 13px;
+    }
+
+    .url-card, .qr-card {
+        padding: 12px;
+    }
+
+    .url-info h3 {
+        font-size: 13px;
+    }
+
+    .url-info p {
+        font-size: 11px;
+    }
+
+    .action-icon-btn {
+        width: 28px;
+        height: 28px;
+    }
+
+    .toast {
+        min-width: 260px;
+        font-size: 13px;
+        padding: 10px 16px;
+        width: calc(100% - 30px);
+        max-width: 280px;
+        margin: 0 15px;
+    }
+
+    .qr-code {
+        width: 150px;
+        height: 150px;
+    }
+
+    .preview-banner {
+        width: 160px;
+        height: 160px;
+    }
+}
+
+/* Large Desktop Styles (1025px+) */
+@media (min-width: 1025px) {
+    .content-card {
+        max-width: 1000px;
+    }
+
+    .hero-title {
+        font-size: 52px;
+    }
+
+    .overlay-content {
+        max-width: 700px;
+    }
+
+    .profile-modal {
+        max-width: 750px;
     }
 }
