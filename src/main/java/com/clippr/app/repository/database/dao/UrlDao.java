@@ -3,10 +3,23 @@ package com.clippr.app.repository.database.dao;
 import com.clippr.app.repository.database.DatabaseConnection;
 import com.clippr.app.repository.dto.UrlDto;
 import java.sql.*;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UrlDao {
+
+    private static final ZoneId IST_ZONE = ZoneId.of("Asia/Kolkata");
+    private static final DateTimeFormatter IST_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    private String formatTimestampToIST(Timestamp timestamp) {
+        if (timestamp == null) return null;
+        return timestamp.toLocalDateTime()
+                .atZone(ZoneId.systemDefault())
+                .withZoneSameInstant(IST_ZONE)
+                .format(IST_FORMATTER);
+    }
 
     public UrlDto findByLongUrl(String longurl) {
         String sql = "SELECT * FROM urls WHERE longurl = ?";
@@ -149,8 +162,8 @@ public class UrlDao {
             rs.getString("longurl"),
             rs.getString("shorturlid"),
             rs.getInt("count"),
-            rs.getTimestamp("created_at") != null ? rs.getTimestamp("created_at").toString() : null,
-            rs.getTimestamp("lastclicked") != null ? rs.getTimestamp("lastclicked").toString() : null
+            formatTimestampToIST(rs.getTimestamp("created_at")),
+            formatTimestampToIST(rs.getTimestamp("lastclicked"))
         );
     }
 }
